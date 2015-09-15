@@ -22,7 +22,7 @@ Development
 Configuration File
 ------------------
 
-Create a configuration file with following content in your home directory:
+Create a configuration file .canrc with following content in your home directory:
 
 [default]
 interface = socketcan

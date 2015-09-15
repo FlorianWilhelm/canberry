@@ -22,6 +22,10 @@ def make_mgt_byte(service, sync=False):
     return msg
 
 
+def bytes_to_int(bytes):
+    return int(bytes.encode('hex'), 16)
+
+
 def make_sdo(recipient, index, value=None, sync=False):
     read = True if value is None else False
     arb_id = 8 * recipient + 512 + 3
