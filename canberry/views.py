@@ -12,4 +12,4 @@ def index():
 
 @app.route('/sensors/speed')
 def speed():
-    return get_speed()
+    return str(get_speed())
