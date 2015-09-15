@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang='en-GB'>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="HandheldFriendly" content="True">
+  <title>CANberry</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="./bower/concise/dist/css/concise.min.css" />
+  <link rel="stylesheet" type="text/css" href="./static/sensorplot.css" >
+</head>
+
+<body>
+  <h1>Ractive test</h1>
+
+  <!--
+       1. This is the element we'll render our Ractive to.
+  -->
+  <div id='container'></div>
+
+  <!--
+       2. You can load a template in many ways. For convenience, we'll include it in
+       a script tag so that we don't need to mess around with AJAX or multiline strings.
+       Note that we've set the type attribute to 'text/ractive' - though it can be
+       just about anything except 'text/javascript'
+  -->
+  <script id='template' type='text/ractive'>
+    <p>Hello, {{name}}!</p>
+    <div id="header">
+  		<h2>Sensor Data</h2>
+  	</div>
+
+  	<div id="content">
+
+  		<div class="demo-container">
+  			<div id="placeholder" class="demo-placeholder"></div>
+  		</div>
+
+
+
+  	</div>
+
+  	<div id="footer">
+  		Copyright &copy; 2007 - 2014 IOLA and Ole Laursen
+  	</div>
+
+
+
+
+  </script>
+
+  <!--
+       3. You can always get the most recent stable version from the URL below.
+       If you want the newest features (unstable!), use the 'edge' version instead:
+
+           http://cdn.ractivejs.org/edge/ractive.min.js
+
+       If you need IE8 support, change 'ractive' to 'ractive-legacy'.
+  -->
+  <script src="./bower/ractive/ractive.min.js"></script>
+  <script src="./bower/jquery/dist/jquery.min.js"></script>
+  <script src="./bower/concise/dist/js/concise.min.js"></script>
+  <script src="./bower/Flot/jquery.flot.js"></script>
+  <script type="text/javascript">
+
+	$(function() {
+
+		var d1 = [];
+		for (var i = 0; i < 14; i += 0.5) {
+			d1.push([i, Math.sin(i)]);
+		}
+
+		var d2 = [[0, 3], [4, 8], [8, 5], [9, 13]];
+
+		// A null signifies separate line segments
+
+		var d3 = [[0, 12], [7, 12], null, [7, 2.5], [12, 2.5]];
+
+		$.plot("#placeholder", [ d1, d2, d3 ]);
+
+		// Add the Flot version string to the footer
+
+		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+	});
+
+	</script>
+  <!--
+       4. We've got an element in the DOM, we've created a template, and we've
+       loaded the library - now it's time to build our Hello World app.
+  -->
+  <script>
+    var ractive = new Ractive({
+      // The `el` option can be a node, an ID, or a CSS selector.
+      el: '#container',
+
+      // We could pass in a string, but for the sake of convenience
+      // we're passing the ID of the <script> tag above.
+      template: '#template',
+
+      // Here, we're passing in some initial data
+      data: { name: 'world' }
+    });
+  </script>
+</body>
+</html>
