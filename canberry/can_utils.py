@@ -25,7 +25,7 @@ def make_mgt_byte(service, sync=False):
 
 
 def bytes_to_int(bytes):
-    return struct.unpack('>I', bytes)[0]
+    return struct.unpack('>I', ''.join([chr(x) for x in bytes]))[0]
 
 
 def make_sdo(recipient, index, value=None, sync=False):

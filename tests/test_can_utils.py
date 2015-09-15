@@ -55,3 +55,6 @@ def test_bytes_to_int():
     bytes = bytearray([0, 0, 8, 0])
     result = bytes_to_int(bytes)
     assert result == 2**11
+    bytes = bytearray([0, 0, 0, 0])
+    result = bytes_to_int(bytes)
+    assert result == 0
