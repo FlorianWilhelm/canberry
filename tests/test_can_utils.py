@@ -5,7 +5,7 @@ from canberry.can_utils import *
 
 
 def test_make_mgmt_byte():
-    mgmt_byte = make_mgt_byte(service.READ_PARAM)
+    mgmt_byte = make_mgt_byte(service.READ_PARAM, sync=True)
     assert bin(mgmt_byte) == '0b1110001'
 
 
