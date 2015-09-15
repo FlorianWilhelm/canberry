@@ -29,7 +29,7 @@ def read_config():
     config.read([os.path.expanduser(path) for path in CONFIG_FILES])
     if not config.has_section('canberry'):
         raise RuntimeError("Please add a section canberry to your CAN config!")
-    return {key: val for key, val in config.items('canberry')}
+    return {key: int(val) for key, val in config.items('canberry')}
 
 
 def get_speed():
@@ -38,9 +38,7 @@ def get_speed():
     bus = can.interface.Bus()
     _logger.debug("Sending message to retrieve rotational speed...")
     if bus.send(msg) < 0:
-        _logger.debug("Message not sent!")
-    else:
-        _logger.debug("Message sent!")
+        raise RuntimeError('No message received')
     _logger.debug("Waiting for message...")
     reply = bus.recv()
     _logger.debug("Message received:\n{}".format(reply))

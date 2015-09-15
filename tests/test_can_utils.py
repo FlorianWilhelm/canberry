@@ -46,3 +46,12 @@ def test_make_sdo_write():
     assert msg.data[5] == 0
     assert msg.data[6] == 0
     assert msg.data[7] == 1
+
+
+def test_bytes_to_int():
+    bytes = bytearray([1, 0, 0, 0])
+    result = bytes_to_int(bytes)
+    assert result == 2**24
+    bytes = bytearray([0, 0, 8, 0])
+    result = bytes_to_int(bytes)
+    assert result == 2**11

@@ -1,5 +1,7 @@
 from __future__ import print_function, absolute_import, division
 
+import struct
+
 import can
 
 
@@ -23,7 +25,7 @@ def make_mgt_byte(service, sync=False):
 
 
 def bytes_to_int(bytes):
-    return int(bytes.encode('hex'), 16)
+    return struct.unpack('>I', bytes)[0]
 
 
 def make_sdo(recipient, index, value=None, sync=False):
