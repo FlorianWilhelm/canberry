@@ -19,8 +19,22 @@ Development
 * Use `bower install -S` to install and update js dependencies like
   concise, ractive, jquery, flotcharts
 
+Configuration File
+------------------
+
+Create a configuration file with following content in your home directory:
+
+[default]
+interface = socketcan
+channel = can0
+
+[canberry]
+identifier = 16
+
+The identifier is the default target address.
+
 Note
 ====
 
-This project has been set up using PyScaffold 2.4rc2. For details and usage
+This project has been set up using PyScaffold 2.4. For details and usage
 information on PyScaffold see http://pyscaffold.readthedocs.org/.
