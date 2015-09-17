@@ -20,7 +20,7 @@ def sensors(sensor):
     known_sensors = Sensor.list_all()
     for _, v in known_sensors.items():
         if v == sensor:
-            return get_sensor(sensor)
+            return str(get_sensor(sensor))
     return abort(404)
 
 
