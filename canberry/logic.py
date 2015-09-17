@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import print_function, absolute_import, division
 
 import os
@@ -19,11 +18,22 @@ __copyright__ = 'Florian Wilhelm'
 _logger = logging.getLogger(__name__)
 
 
-class sensors(object):
-    SPEED = 0x207E
+class Sensor(object):
+    """
+    Namespace for convenient and consistent naming
+    """
+    SPEED = 'speed'
+    DUMMY = 'dummy'
+    code = {SPEED: 0x207E,
+            DUMMY: 0xFFFF}
 
 
 def read_config():
+    """
+    Read the configuration files .canrc, can.conf etc. as defined by python
+    can in order to retrieve all settings from the section [canberry].
+    :return: dictionary
+    """
     from can.util import CONFIG_FILES
     config = ConfigParser()
     config.read([os.path.expanduser(path) for path in CONFIG_FILES])
@@ -32,11 +42,17 @@ def read_config():
     return {key: int(val) for key, val in config.items('canberry')}
 
 
-def get_speed():
+def get_sensor(sensor):
+    """
+    Retrieve the data from a sensor
+
+    :param sensor: name of a sensor according to :obj:`Sensor`
+    :return: sensor data as int
+    """
     identifier = read_config()['identifier']
-    msg = make_sdo(recipient=identifier, index=sensors.SPEED)
+    msg = make_sdo(recipient=identifier, index=Sensor.codes[sensor])
     bus = can.interface.Bus()
-    _logger.debug("Sending message to retrieve rotational speed...")
+    _logger.debug("Sending message to {}...".format(sensor))
     if bus.send(msg) < 0:
         raise RuntimeError('No message received')
     _logger.debug("Waiting for message...")
