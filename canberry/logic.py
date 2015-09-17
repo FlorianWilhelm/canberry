@@ -9,6 +9,7 @@ except ImportError:
     from ConfigParser import SafeConfigParser as ConfigParser
 
 from .can_utils import make_sdo, bytes_to_int
+from .utils import list_attributes
 
 import can
 
@@ -26,6 +27,11 @@ class Sensor(object):
     DUMMY = 'dummy'
     code = {SPEED: 0x207E,
             DUMMY: 0xFFFF}
+
+    @classmethod
+    def list_all(cls):
+        attrs = list_attributes(cls)
+        return {k: v for k, v in attrs.items() if isinstance(v, basestring)}
 
 
 def read_config():
@@ -50,7 +56,7 @@ def get_sensor(sensor):
     :return: sensor data as int
     """
     identifier = read_config()['identifier']
-    msg = make_sdo(recipient=identifier, index=Sensor.codes[sensor])
+    msg = make_sdo(recipient=identifier, index=Sensor.code[sensor])
     bus = can.interface.Bus()
     _logger.debug("Sending message to {}...".format(sensor))
     if bus.send(msg) < 0:
