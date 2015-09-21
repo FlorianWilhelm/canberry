@@ -5,7 +5,7 @@ from canberry.can_utils import *
 
 
 def test_make_mgmt_byte():
-    mgmt_byte = make_mgt_byte(Service.READ_PARAM, sync=True)
+    mgmt_byte = make_mgt_byte(Service.code[Service.READ_PARAM], sync=True)
     assert bin(mgmt_byte) == '0b1110001'
 
 
@@ -15,7 +15,7 @@ def test_make_sdo_read():
     msg = make_sdo(recipient, index)
     assert bin(msg.arbitration_id) == '0b1010000011'
     # Check managment field
-    assert msg.data[0] == make_mgt_byte(Service.READ_PARAM)
+    assert msg.data[0] == make_mgt_byte(Service.code[Service.READ_PARAM])
     # Check reserved field
     assert msg.data[1] == 0
     # Check index fields
@@ -32,10 +32,10 @@ def test_make_sdo_write():
     recipient = 32
     index = 1024
     value = 1
-    msg = make_sdo(recipient, index, value)
+    msg = make_sdo(recipient, index, value=value)
     assert bin(msg.arbitration_id) == '0b1100000011'
     # Check managment field
-    assert msg.data[0] == make_mgt_byte(Service.WRITE_PARAM)
+    assert msg.data[0] == make_mgt_byte(Service.code[Service.WRITE_PARAM])
     # Check reserved field
     assert msg.data[1] == 0
     # Check index fields

@@ -10,15 +10,24 @@ class Service(object):
     """
     Namespace for convenient and consistent naming
     """
-    NO_SERVICE = 0
-    READ_PARAM = 1
-    WRITE_PARAM = 2
-    WRITE_PARAM_VOLATILE = 3
-    READ_MIN = 4
-    READ_MAX = 5
-    READ_DEFAULT = 6
-    READ_SCALE = 7
-    READ_ATTR = 8
+    NO_SERVICE = 'no_service'
+    WRITE_PARAM = 'write_parameter'
+    WRITE_PARAM_VOLATILE = 'write_parameter_volatile'
+    READ_PARAM = 'parameter'
+    READ_MIN = 'minimum'
+    READ_MAX = 'maximum'
+    READ_DEFAULT = 'default'
+    READ_SCALE = 'scale'
+    READ_ATTR = 'attribute'
+    code = {NO_SERVICE: 0,
+            READ_PARAM: 1,
+            WRITE_PARAM: 2,
+            WRITE_PARAM_VOLATILE: 3,
+            READ_MIN: 4,
+            READ_MAX: 5,
+            READ_DEFAULT: 6,
+            READ_SCALE: 7,
+            READ_ATTR: 8}
 
 
 def make_mgt_byte(service, sync=False):
@@ -45,28 +54,30 @@ def bytes_to_int(bytes):
     return struct.unpack('>I', ''.join([chr(x) for x in bytes]))[0]
 
 
-def make_sdo(recipient, index, value=None, sync=False):
+def make_sdo(recipient, index, service=None, value=None, sync=False):
     """
-    Creates an Service Data Object message
+    Creates a Service Data Object message
 
     :param recipient: the recipient as integer
     :param index: integer for the sensor
+    :param service: requested service from :obj:`~.Service `
     :param value: None to read a value otherwise write value
     :param sync: Synchronized protocol
-    :return:
+    :return: Service Data Object message
     """
-    read = True if value is None else False
-    arb_id = 8 * recipient + 512 + 3
-    if read:
-        mgmt_byte = make_mgt_byte(Service.READ_PARAM, sync)
-        value = 0
-    else:
-        mgmt_byte = make_mgt_byte(Service.WRITE_PARAM, sync)
+    if service is None:
+        read = True if value is None else False
+        if read:
+            service = Service.READ_PARAM
+            value = 0
+        else:
+            service = Service.WRITE_PARAM
+    mgmt_byte = make_mgt_byte(Service.code[service], sync)
     index_high = index >> 8  # first two hex digits
     index_low = index - (index_high << 8)  # last two hex digits
     value = '{:08x}'.format(value)  # padding with 0 to 4 bytes
     # Split into 1 byte pieces and convert to int
     value = [int(value[i:i+2]) for i in range(0, len(value), 2)]
     data = [mgmt_byte, 0, index_high, index_low] + value
-    msg = can.Message(arbitration_id=arb_id, data=data, extended_id=False)
-    return msg
+    arb_id = 8 * recipient + 512 + 3
+    return can.Message(arbitration_id=arb_id, data=data, extended_id=False)

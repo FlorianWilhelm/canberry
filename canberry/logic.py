@@ -8,10 +8,11 @@ try:
 except ImportError:
     from ConfigParser import SafeConfigParser as ConfigParser
 
-from .can_utils import make_sdo, bytes_to_int
+import can
+
+from .can_utils import make_sdo, bytes_to_int, Service
 from .utils import list_attributes
 
-import can
 
 __author__ = 'Florian Wilhelm'
 __copyright__ = 'Florian Wilhelm'
@@ -48,20 +49,29 @@ def read_config():
     return {key: int(val) for key, val in config.items('canberry')}
 
 
-def get_sensor(sensor):
+def read_sensor(sensor):
     """
     Retrieve the data from a sensor
 
-    :param sensor: name of a sensor according to :obj:`Sensor`
-    :return: sensor data as int
+    :param sensor: name of a sensor according to :obj:`inSensor`
+    :return: sensor data as json dictionary
     """
     identifier = read_config()['identifier']
-    msg = make_sdo(recipient=identifier, index=Sensor.code[sensor])
     bus = can.interface.Bus()
-    _logger.debug("Sending message to {}...".format(sensor))
-    if bus.send(msg) < 0:
-        raise RuntimeError('No message received')
-    _logger.debug("Waiting for message...")
-    reply = bus.recv()
-    _logger.debug("Message received:\n{}".format(reply))
-    return bytes_to_int(reply.data[4:8])
+    services = [Service.READ_PARAM, Service.READ_DEFAULT, Service.READ_MIN,
+                Service.READ_MAX, Service.READ_SCALE]
+
+    response = dict()
+    for service in services:
+        msg = make_sdo(recipient=identifier,
+                       index=Sensor.code[sensor],
+                       service=service)
+        _logger.debug("Sending {} message to {}...".format(service, sensor))
+        if bus.send(msg) < 0:
+            raise RuntimeError('No message received')
+        _logger.debug("Waiting for message...")
+        reply = bus.recv()
+        _logger.debug("Message received:\n{}".format(reply))
+        response[service] = bytes_to_int(reply.data[4:8])
+
+    return response
