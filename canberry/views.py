@@ -24,11 +24,10 @@ def list_sensors():
 
 @app.route('/sensors/<sensor>')
 def read_sensor(sensor):
-    known_sensors = logic.Sensor.list_all()
-    for _, v in known_sensors.items():
-        if v == sensor:
-            return json.dumps(logic.read_sensor(sensor))
-    return abort(404)
+    if logic.is_sensor_known(sensor):
+        return json.dumps(logic.read_sensor(sensor))
+    else:
+        return abort(404)
 
 
 @app.route('/sensors/dummy')
@@ -39,3 +38,16 @@ def read_dummy():
                 Service.READ_DEFAULT: 0,
                 Service.READ_SCALE: 1}
     return json.dumps(response)
+
+
+@app.route('/sensors/<sensor>/<int:value>')
+def write_sensor(sensor, value):
+    if logic.is_sensor_known(sensor):
+        try:
+            logic.write_sensor(sensor, value)
+        except:
+            raise
+            # return json.dumps({'status': 'error'})
+        return json.dumps({'status': 'ok'})
+    else:
+        return abort(404)

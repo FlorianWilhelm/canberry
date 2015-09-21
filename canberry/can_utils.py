@@ -69,9 +69,12 @@ def make_sdo(recipient, index, service=None, value=None, sync=False):
         read = True if value is None else False
         if read:
             service = Service.READ_PARAM
-            value = 0
         else:
             service = Service.WRITE_PARAM
+    if value is None:
+        if service in [Service.WRITE_PARAM, Service.WRITE_PARAM_VOLATILE]:
+            raise RuntimeError("No value set for writing sensor!")
+        value = 0
     mgmt_byte = make_mgt_byte(Service.code[service], sync)
     index_high = index >> 8  # first two hex digits
     index_low = index - (index_high << 8)  # last two hex digits

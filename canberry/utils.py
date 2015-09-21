@@ -2,9 +2,6 @@
 
 from __future__ import print_function, absolute_import, division
 
-import time
-import math
-
 __author__ = 'Florian Wilhelm'
 __copyright__ = 'Florian Wilhelm'
 
