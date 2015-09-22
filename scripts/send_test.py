@@ -11,13 +11,14 @@ import logging
 import can
 
 from canberry.can_utils import make_sdo
+from canberry.logic import Sensor
 
 _logger = logging.getLogger(__name__)
 
 
 def main(args):
     bus = can.interface.Bus()
-    msg = make_sdo(recipient=0x42, index=0x32)
+    msg = make_sdo(recipient=42, index=Sensor.SPEED)
     _logger.info("Sending message...")
     if bus.send(msg) < 0:
         _logger.info("Message not sent!")
