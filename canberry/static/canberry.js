@@ -1,8 +1,13 @@
 var sensorData = (function () {
+    var maxNumOfElements = 1000;
+    var plot;
     var data = []; // private
     var pub = {}; // public object - returned at end of module
 
     pub.addData = function(value) {
+        if (data.length > maxNumOfElements) {
+            data.shift();
+        }
         data.push(value);
     };
 
@@ -10,20 +15,22 @@ var sensorData = (function () {
         data = [];
     };
 
-    pub.getData = function() {
-        return data;
-    };
-
     pub.plotData = function() {
+        if (! plot) {
+            plot = $.plot("#placeholder", [], {
+                xaxis: {
+                    show: false,
+                    min: 0,
+                    max: maxNumOfElements
+                }
+            });
+        }
         var points = [];
 		for (var i = 0; i < data.length; ++i) {
-			points.push([i, data[i]])
+			points.push([i, data[i]]);
 		}
-        $.plot("#placeholder", [points], {
-            xaxis: {
-			    show: false
-			}
-		});
+        plot.setData([points]);
+        plot.draw();
     };
 
     return pub; // expose externally
@@ -37,5 +44,5 @@ function updateGraph() {
     }
 
 $( document ).ready(function() {
-    setInterval(updateGraph, 1000);
+    setInterval(updateGraph, 100);
 });

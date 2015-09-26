@@ -32,7 +32,7 @@ def read_sensor(sensor):
 
 @app.route('/sensors/dummy')
 def read_dummy():
-    response = {Service.READ_PARAM: 0.2*math.sin(time.time()),
+    response = {Service.READ_PARAM: math.sin(0.2*time.time()),
                 Service.READ_MIN: -1,
                 Service.READ_MAX: 1,
                 Service.READ_DEFAULT: 0,
