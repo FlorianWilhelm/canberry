@@ -41,6 +41,19 @@ Create a configuration file .canrc with following content in your home directory
 
 The identifier is the default target address.
 
+
+Credits
+=======
+
+This project uses following libraries:
+
+* `jQuery <https://jquery.com/>`_
+* `Concise CSS <http://concisecss.com/>`_
+* `Ractive.js <http://www.ractivejs.org/>`_
+* `Flot <http://www.flotcharts.org/>`_
+* `python-can <https://python-can.readthedocs.org/>`_
+
+
 Note
 ====
 
