@@ -8,6 +8,7 @@ var maxNumOfElements = 1000;
 // http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html
 var sensorData = (function () {
     var plot;
+    var interval = maxNumOfElements * updateInterval;
     var data = []; // private
     var pub = {}; // public object - returned at end of module
 
@@ -31,13 +32,25 @@ var sensorData = (function () {
             xaxis: {
                 show: false,
                 min: 0,
-                max: maxNumOfElements * updateInterval
+                max: interval
             }
         });
     };
 
+    // private function to restict data to plotting interval
+    function prepareData(data) {
+        var x_max = data[data.length-1][0];
+        var res = data.filter(function(elem, idx) {
+            return elem[0] >= x_max - interval;
+        })
+        res = res.map(function(elem, idx){
+            return [interval - (x_max - elem[0]), elem[1]]
+        });
+        return res;
+    }
+
     pub.plotData = function() {
-        var points = scaleData(data);
+        var points = prepareData(data);
         plot.setData([points]);
         plot.draw();
     };
@@ -45,29 +58,17 @@ var sensorData = (function () {
     return pub; // expose externally
 }());
 
-function scaleData(data) {
-    var res = [];
-    var x_min = data[0][0];
-    var x_max = data[data.length-1][0];
-    var period = (x_max - x_min) / (data.length * updateInterval);
-    var res = data.map(function(d, i){
-        return [(d[0] - x_min) / period, d[1]]
-    });
-    return res;
-}
-
 function readSensor() {
-    $.getJSON('./sensors/dummy', function(data, status) {
+    return $.getJSON('./sensors/dummy', function(data, status) {
     sensorData.addData([$.now(), data.parameter])});
 }
 
 function updateGraph() {
-    readSensor();
-    sensorData.plotData();
+    $.when( readSensor() ).done(sensorData.plotData);
 }
 
 $( document ).ready(function() {
-    $.when( $.getJSON('./sensors/dummy') ).done(function(data, status) {
+    $.when( readSensor() ).done(function(data, status) {
         sensorData.initPlot(data.minimum, data.maximum);
         setInterval(updateGraph, updateInterval);
     });
