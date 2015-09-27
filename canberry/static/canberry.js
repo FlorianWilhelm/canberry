@@ -1,3 +1,7 @@
+"use strict";
+
+var updateInterval = 100;
+
 var sensorData = (function () {
     var maxNumOfElements = 1000;
     var plot;
@@ -15,15 +19,23 @@ var sensorData = (function () {
         data = [];
     };
 
+    pub.initPlot = function (min, max) {
+        plot = $.plot("#placeholder", [[0, 0]], {
+            yaxis: {
+                min: min,
+                max: max
+            },
+            xaxis: {
+                show: false,
+                min: 0,
+                max: maxNumOfElements
+            }
+        });
+    };
+
     pub.plotData = function() {
         if (! plot) {
-            plot = $.plot("#placeholder", [], {
-                xaxis: {
-                    show: false,
-                    min: 0,
-                    max: maxNumOfElements
-                }
-            });
+
         }
         var points = [];
 		for (var i = 0; i < data.length; ++i) {
@@ -36,13 +48,19 @@ var sensorData = (function () {
     return pub; // expose externally
 }());
 
+function readSensor() {
+    $.getJSON('./sensors/dummy', function(data, status) {
+    sensorData.addData(data.parameter)});
+}
+
 function updateGraph() {
-    $.get('./sensors/dummy', function(data, status) {
-        data = JSON.parse(data);
-        sensorData.addData(data.parameter)});
+    readSensor();
     sensorData.plotData();
     }
 
 $( document ).ready(function() {
-    setInterval(updateGraph, 100);
+    $.when( $.getJSON('./sensors/dummy') ).done(function(data, status) {
+        sensorData.initPlot(data.minimum, data.maximum);
+        setInterval(updateGraph, updateInterval);
+    });
 });
