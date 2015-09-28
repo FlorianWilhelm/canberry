@@ -64,7 +64,9 @@ var sensorSelector = (function () {
     var pub = {}; // public object - returned at end of module
 
     pub.initSensors = function (list) {
+        assert(!isArrayEmpty(list));
         sensors = list;
+        currSensor = list[0];
     };
 
     pub.getCurrSensor = function() {
@@ -110,6 +112,11 @@ function updateGraph() {
         });
 }
 
+function isArrayEmpty(array) {
+    // the array is defined and has at least one element
+    return typeof array === 'undefined' || array.length == 0;
+}
+
 // initialization, starting of ractive.js and refresh interval
 var ractive;
 $( document ).ready(function() {
@@ -121,7 +128,8 @@ $( document ).ready(function() {
           // we're passing the ID of the <script> tag above.
           template: '#template',
           // Here, we're passing in some initial data
-          data: {sensors: sensorSelector.listSensors()}
+          data: {sensors: sensorSelector.listSensors(),
+                 currSensor: sensorSelector.getCurrSensor()}
         });
         sensorData.initPlot(data.minimum, data.maximum);
         setInterval(updateGraph, updateInterval);
