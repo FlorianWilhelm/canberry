@@ -81,10 +81,10 @@ input[type=checkbox] {
 	color: #999;
 }
 
-.demo-container {
+.sensor-container {
 	box-sizing: border-box;
 	width: 850px;
-	height: 450px;
+	height: 500px;
 	padding: 20px 15px 15px 15px;
 	margin: 15px auto 30px auto;
 	border: 1px solid #ddd;
@@ -101,7 +101,7 @@ input[type=checkbox] {
 	-webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
-.demo-placeholder {
+.sensor-plot {
 	width: 100%;
 	height: 100%;
 	font-size: 14px;

@@ -24,7 +24,7 @@ var sensorData = (function () {
     };
 
     pub.initPlot = function (min, max) {
-        plot = $.plot("#placeholder", [[0, 0]], {
+        plot = $.plot("#sensor-plot", [[0, 0]], {
             yaxis: {
                 min: min,
                 max: max
@@ -58,17 +58,71 @@ var sensorData = (function () {
     return pub; // expose externally
 }());
 
+var sensorSelector = (function () {
+    var currSensor; // private
+    var sensors = []; // private
+    var pub = {}; // public object - returned at end of module
+
+    pub.initSensors = function (list) {
+        sensors = list;
+    };
+
+    pub.getCurrSensor = function() {
+        return currSensor;
+    };
+
+    pub.setCurrSensor = function(sensor) {
+        assert(sensors.indexOf(sensor) > -1);
+        currSensor = sensor;
+    };
+
+    pub.listSensors = function() {
+        return sensors;
+    };
+
+    return pub; // expose externally
+}());
+
+function assert(condition, message) {
+    if (!condition) {
+        message = message || "Assertion failed";
+        if (typeof Error !== "undefined") {
+            throw new Error(message);
+        }
+        throw message; // Fallback
+    }
+}
+
 function readSensor() {
-    return $.getJSON('./sensors/dummy', function(data, status) {
-    sensorData.addData([$.now(), data.parameter])});
+    return $.when( $.getJSON('./sensors/dummy') ).done(function(data, status) {
+        sensorData.addData([$.now(), data.parameter])});
+}
+
+function initSensors() {
+    return $.when( $.getJSON('./sensors') ).done(function(data, status) {
+    sensorSelector.initSensors(data)});
 }
 
 function updateGraph() {
-    $.when( readSensor() ).done(sensorData.plotData);
+    $.when( readSensor() ).done(function(data, status) {
+        sensorData.plotData();
+        $('#sensor-value').text(data.parameter);
+        });
 }
 
+// initialization, starting of ractive.js and refresh interval
+var ractive;
 $( document ).ready(function() {
-    $.when( readSensor() ).done(function(data, status) {
+    $.when( initSensors(), readSensor() ).done(function(sensors, data) {
+        ractive = new Ractive({
+          // The `el` option can be a node, an ID, or a CSS selector.
+          el: '#container',
+          // We could pass in a string, but for the sake of convenience
+          // we're passing the ID of the <script> tag above.
+          template: '#template',
+          // Here, we're passing in some initial data
+          data: {sensors: sensorSelector.listSensors()}
+        });
         sensorData.initPlot(data.minimum, data.maximum);
         setInterval(updateGraph, updateInterval);
     });

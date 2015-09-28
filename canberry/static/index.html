@@ -34,8 +34,20 @@
 </footer>
 
 <script id='template' type='text/ractive'>
-    <div class="demo-container">
-        <div id="placeholder" class="demo-placeholder"></div>
+    <div class="clearfix">
+        <div tabindex="0" class="dropdown button float--left">
+            Select sensor &raquo;
+            <ul class="dropdown-content">
+                {{#sensors}}
+                <li>{{this}}</li>
+                {{/sensors}}
+            </ul>
+        </div>
+        <div class="float--center" id="sensor-name"></div>
+        <div class="float--right" id="sensor-value"></div>
+    </div>
+    <div class="sensor-container">
+        <div id="sensor-plot" class="sensor-plot"></div>
     </div>
 </script>
 
@@ -44,18 +56,5 @@
 <script src="./bower/Flot/jquery.flot.js"></script>
 <script src="./static/canberry.js"></script>
 
-<script>
-    var ractive = new Ractive({
-      // The `el` option can be a node, an ID, or a CSS selector.
-      el: '#container',
-
-      // We could pass in a string, but for the sake of convenience
-      // we're passing the ID of the <script> tag above.
-      template: '#template',
-
-      // Here, we're passing in some initial data
-      data: {}
-    });
-</script>
 </body>
 </html>
