@@ -8,26 +8,50 @@ var maxNumOfElements = 1000;
 // http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html
 var sensorData = (function () {
     var plot;
+    var points = [];
+    var lastData;
     var interval = maxNumOfElements * updateInterval;
-    var data = []; // private
     var pub = {}; // public object - returned at end of module
 
-    pub.addData = function(tuple) {
-        if (data.length > maxNumOfElements) {
+    /* Private functions */
+
+    function addData(data) {
+        lastData = data;
+        points.push([data.timestamp, data.parameter])
+        while (points.length > maxNumOfElements) {
             data.shift();
         }
-        data.push(tuple);
-    };
+    }
 
-    pub.clearData = function() {
-        data = [];
-    };
+    // restict data to plotting interval
+    function transformedPoints() {
+        var x_max = points[points.length-1][0];
+        var res = points.filter(function(elem, idx) {
+            // check line segment delimiters
+            if (elem === null) {
+                return true;
+            }
+            return elem[0] >= x_max - interval;
+        })
+        res = res.map(function(elem, idx){
+            // check line segment delimiters
+            if (elem === null) {
+                return null;
+            }
+            return [interval - (x_max - elem[0]), elem[1]]
+        });
+        return res;
+    }
 
-    pub.initPlot = function (min, max) {
-        plot = $.plot("#sensor-plot", [[0, 0]], {
+    function initPlot() {
+        // start a new line segment if necessary
+        if (points.length > 1) {
+            points.splice(points.length-2, 0, null)
+        }
+        plot = $.plot("#sensor-plot", [points], {
             yaxis: {
-                min: min,
-                max: max
+                min: lastData.minimum,
+                max: lastData.maximum
             },
             xaxis: {
                 show: false,
@@ -35,24 +59,26 @@ var sensorData = (function () {
                 max: interval
             }
         });
-    };
-
-    // private function to restict data to plotting interval
-    function prepareData(data) {
-        var x_max = data[data.length-1][0];
-        var res = data.filter(function(elem, idx) {
-            return elem[0] >= x_max - interval;
-        })
-        res = res.map(function(elem, idx){
-            return [interval - (x_max - elem[0]), elem[1]]
-        });
-        return res;
     }
 
-    pub.plotData = function() {
-        var points = prepareData(data);
-        plot.setData([points]);
+    /* Public functions */
+
+    pub.updateSensor = function() {
+        var url = './sensors/' + sensorSelector.getCurrSensor();
+        return $.getJSON(url).then(addData);
+    }
+
+    pub.updatePlot = function() {
+        plot.setData([transformedPoints()]);
         plot.draw();
+    };
+
+    pub.startNewSensor = function() {
+        return sensorData.updateSensor().then(initPlot);
+    };
+
+    pub.getSensorValue = function () {
+        return points[points.length-1][1];
     };
 
     return pub; // expose externally
@@ -63,10 +89,12 @@ var sensorSelector = (function () {
     var sensors = []; // private
     var pub = {}; // public object - returned at end of module
 
-    pub.initSensors = function (list) {
-        assert(!isArrayEmpty(list));
-        sensors = list;
-        currSensor = list[0];
+    pub.initSensors = function() {
+        return $.getJSON('./sensors').then(function(data, status) {
+            assert( !isArrayEmpty(data) );
+            sensors = data;
+            currSensor = data[0];
+        });
     };
 
     pub.getCurrSensor = function() {
@@ -95,50 +123,45 @@ function assert(condition, message) {
     }
 }
 
-function readSensor() {
-    var url = './sensors/' + sensorSelector.getCurrSensor();
-    return $.getJSON(url).then(function(data, status) {
-        sensorData.addData([$.now(), data.parameter])
-        return data;
-        });
-}
-
-function initSensors() {
-    return $.getJSON('./sensors').then(function(data, status) {
-        sensorSelector.initSensors(data)});
-}
-
-function updateGraph() {
-    $.when( readSensor() ).done(function(data, status) {
-        sensorData.plotData();
-        $('#sensor-value').text(data.parameter);
-        });
-}
-
 function isArrayEmpty(array) {
     // the array is undefined or has no elements
     return typeof array === 'undefined' || array.length == 0;
 }
 
+function refreshApp() {
+    sensorData.updateSensor().then(sensorData.updatePlot).done(function() {
+        ractive.set('sensorValue', sensorData.getSensorValue())
+    });
+
+}
+
+// set up Ractive.js and event proxies
+function initRactive() {
+    ractive = new Ractive({
+      // The `el` option can be a node, an ID, or a CSS selector.
+      el: '#container',
+      // We could pass in a string, but for the sake of convenience
+      // we're passing the ID of the <script> tag above.
+      template: '#template',
+      // Here, we're passing in some initial data
+      data: {sensors: sensorSelector.listSensors(),
+             currSensor: sensorSelector.getCurrSensor(),
+             sensorValue: sensorData.getSensorValue()}
+    });
+    ractive.on('change-sensor', function (event) {
+        sensorSelector.setCurrSensor(event.context);
+        ractive.set('currSensor', event.context);
+        sensorData.startNewSensor();
+    });
+}
+
 // initialization, starting of ractive.js and refresh interval
 var ractive;
 $( document ).ready(function() {
-    initSensors().then(readSensor).done(function(data) {
-        ractive = new Ractive({
-          // The `el` option can be a node, an ID, or a CSS selector.
-          el: '#container',
-          // We could pass in a string, but for the sake of convenience
-          // we're passing the ID of the <script> tag above.
-          template: '#template',
-          // Here, we're passing in some initial data
-          data: {sensors: sensorSelector.listSensors(),
-                 currSensor: sensorSelector.getCurrSensor()}
-        });
-        ractive.on('change-sensor', function (event) {
-            sensorSelector.setCurrSensor(event.context);
-            ractive.set('currSensor', event.context);
-        });
-        sensorData.initPlot(data.minimum, data.maximum);
-        setInterval(updateGraph, updateInterval);
-    });
+    sensorSelector.initSensors().then(
+        sensorData.updateSensor).done(function() {
+            initRactive();
+            sensorData.startNewSensor();
+            setInterval(refreshApp, updateInterval);
+        })
 });

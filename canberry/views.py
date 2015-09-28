@@ -9,6 +9,7 @@ from flask import abort
 from . import logic
 from . import app
 from .can_utils import Service
+from .utils import add_timestamp
 
 
 @app.route('/')
@@ -18,14 +19,16 @@ def index():
 
 @app.route('/sensors')
 def list_sensors():
-    sensors = logic.Sensor.list_all().values()
+    sensors = sorted(logic.Sensor.list_all().values())
     return json.dumps(sensors)
 
 
 @app.route('/sensors/<sensor>')
 def read_sensor(sensor):
     if logic.is_sensor_known(sensor):
-        return json.dumps(logic.read_sensor(sensor))
+        response = logic.read_sensor(sensor)
+        add_timestamp(response)
+        return json.dumps(response)
     else:
         return abort(404)
 
@@ -37,16 +40,18 @@ def read_dummy1():
                 Service.READ_MAX: 1,
                 Service.READ_DEFAULT: 0,
                 Service.READ_SCALE: 1}
+    add_timestamp(response)
     return json.dumps(response)
 
 
 @app.route('/sensors/dummy2')
 def read_dummy2():
-    response = {Service.READ_PARAM: math.sin(2.0*time.time()),
-                Service.READ_MIN: -1,
-                Service.READ_MAX: 1,
+    response = {Service.READ_PARAM: 2*math.sin(time.time())+0.5,
+                Service.READ_MIN: -1.5,
+                Service.READ_MAX: 2.5,
                 Service.READ_DEFAULT: 0,
                 Service.READ_SCALE: 1}
+    add_timestamp(response)
     return json.dumps(response)
 
 

@@ -21,7 +21,7 @@
 }
 
 .siteContent {
-  padding: 50px 0;
+  padding: 25px 0;
   text-align: center;
 }
 
@@ -71,14 +71,6 @@ input[type=checkbox] {
 	width: 880px;
 	margin: 0 auto;
 	padding: 10px;
-}
-
-#footer {
-	margin-top: 25px;
-	margin-bottom: 10px;
-	text-align: center;
-	font-size: 12px;
-	color: #999;
 }
 
 .sensor-container {
