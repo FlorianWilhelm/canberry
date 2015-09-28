@@ -25,9 +25,11 @@ class Sensor(object):
     Namespace for convenient and consistent naming
     """
     SPEED = 'speed'
-    DUMMY = 'dummy'
+    DUMMY1 = 'dummy1'
+    DUMMY2 = 'dummy2'
     code = {SPEED: 0x207E,
-            DUMMY: 0xFFFF}
+            DUMMY1: 0xFFFF,
+            DUMMY2: 0xFFFF}
 
     @classmethod
     def list_all(cls):

@@ -30,9 +30,19 @@ def read_sensor(sensor):
         return abort(404)
 
 
-@app.route('/sensors/dummy')
-def read_dummy():
+@app.route('/sensors/dummy1')
+def read_dummy1():
     response = {Service.READ_PARAM: math.sin(0.5*time.time()),
+                Service.READ_MIN: -1,
+                Service.READ_MAX: 1,
+                Service.READ_DEFAULT: 0,
+                Service.READ_SCALE: 1}
+    return json.dumps(response)
+
+
+@app.route('/sensors/dummy2')
+def read_dummy2():
+    response = {Service.READ_PARAM: math.sin(2.0*time.time()),
                 Service.READ_MIN: -1,
                 Service.READ_MAX: 1,
                 Service.READ_DEFAULT: 0,

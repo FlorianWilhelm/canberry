@@ -96,13 +96,16 @@ function assert(condition, message) {
 }
 
 function readSensor() {
-    return $.when( $.getJSON('./sensors/dummy') ).done(function(data, status) {
-        sensorData.addData([$.now(), data.parameter])});
+    var url = './sensors/' + sensorSelector.getCurrSensor();
+    return $.getJSON(url).then(function(data, status) {
+        sensorData.addData([$.now(), data.parameter])
+        return data;
+        });
 }
 
 function initSensors() {
-    return $.when( $.getJSON('./sensors') ).done(function(data, status) {
-    sensorSelector.initSensors(data)});
+    return $.getJSON('./sensors').then(function(data, status) {
+        sensorSelector.initSensors(data)});
 }
 
 function updateGraph() {
@@ -113,14 +116,14 @@ function updateGraph() {
 }
 
 function isArrayEmpty(array) {
-    // the array is defined and has at least one element
+    // the array is undefined or has no elements
     return typeof array === 'undefined' || array.length == 0;
 }
 
 // initialization, starting of ractive.js and refresh interval
 var ractive;
 $( document ).ready(function() {
-    $.when( initSensors(), readSensor() ).done(function(sensors, data) {
+    initSensors().then(readSensor).done(function(data) {
         ractive = new Ractive({
           // The `el` option can be a node, an ID, or a CSS selector.
           el: '#container',
@@ -130,6 +133,10 @@ $( document ).ready(function() {
           // Here, we're passing in some initial data
           data: {sensors: sensorSelector.listSensors(),
                  currSensor: sensorSelector.getCurrSensor()}
+        });
+        ractive.on('change-sensor', function (event) {
+            sensorSelector.setCurrSensor(event.context);
+            ractive.set('currSensor', event.context);
         });
         sensorData.initPlot(data.minimum, data.maximum);
         setInterval(updateGraph, updateInterval);
