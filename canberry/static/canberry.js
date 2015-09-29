@@ -19,7 +19,7 @@ var sensorData = (function () {
         lastData = data;
         points.push([data.timestamp, data.parameter])
         while (points.length > maxNumOfElements) {
-            data.shift();
+            points.shift();
         }
     }
 
@@ -44,10 +44,7 @@ var sensorData = (function () {
     }
 
     function initPlot() {
-        // start a new line segment if necessary
-        if (points.length > 1) {
-            points.splice(points.length-2, 0, null)
-        }
+        points.splice(points.length-1, 0, null) // start a new line segment
         plot = $.plot("#sensor-plot", [points], {
             yaxis: {
                 min: lastData.minimum,
@@ -84,6 +81,7 @@ var sensorData = (function () {
     return pub; // expose externally
 }());
 
+// object to store all sensors and the currently selected
 var sensorSelector = (function () {
     var currSensor; // private
     var sensors = []; // private

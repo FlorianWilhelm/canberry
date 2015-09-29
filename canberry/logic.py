@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+High-level functions to read and write a sensor of the MOVIDRIVE traction
+converter
+"""
 from __future__ import print_function, absolute_import, division
 
 import os

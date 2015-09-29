@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+Implementation of the protocol for the MOVIDRIVE traction converter of
+SEW EURODRIVE
+"""
 from __future__ import print_function, absolute_import, division
 
 import struct

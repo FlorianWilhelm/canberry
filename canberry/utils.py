@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-
+"""
+Additional utilities unrelated to everyting else
+"""
 from __future__ import print_function, absolute_import, division
 
 import time

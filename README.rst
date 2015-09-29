@@ -2,14 +2,40 @@
 CANberry
 ========
 
-A small web app that displays sensor data and controls a small engine
-connected to the Raspberry Pi with a controller area network (CAN) bus.
+A small web app that displays sensor data and controls a MOVIDRIVE traction
+converter (Antriebsumrichter) of SEW EURODRIVE connected to the Raspberry Pi
+with a controller area network (CAN) bus.
 
-Description
-===========
+Manuals
+-------
+
+* `MOVIDRIVE Serielle Kommunikation <http://download.sew-eurodrive.com/download/pdf/10531602.pdf>`_
+* `MOVIDRIVE Handbuch <http://download.sew-eurodrive.com/download/pdf/09191607.pdf>`_
+* `MOVIDRIVE Operating Instruction <http://download.sew-eurodrive.com/download/pdf/10532617.pdf>`_
+
+Installation
+============
+
+In order to install CANberry just create a virtual environment and use pip::
+
+    pip install canberry
+
+Configuration
+=============
+
+Create a configuration file .canrc with following content in your home directory::
+
+    [default]
+    interface = socketcan
+    channel = can0
+
+    [canberry]
+    identifier = 16
+
+The identifier is the default target address.
 
 Development
------------
+===========
 
 Installation:
 
@@ -26,21 +52,6 @@ Updating the javascript components with:
 * Install *bower* with `sudo npm install -g bower`.
 * Use `bower install -S` to install and update js dependencies like
   concise, ractive, jquery, flotcharts.
-
-Configuration File
-------------------
-
-Create a configuration file .canrc with following content in your home directory::
-
-    [default]
-    interface = socketcan
-    channel = can0
-
-    [canberry]
-    identifier = 16
-
-The identifier is the default target address.
-
 
 Credits
 =======

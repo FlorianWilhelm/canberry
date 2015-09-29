@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-
+"""
+The command line interface for canberry
+"""
 from __future__ import print_function, absolute_import, division
 
 import sys
