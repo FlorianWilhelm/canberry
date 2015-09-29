@@ -3,7 +3,7 @@ from __future__ import print_function, absolute_import, division
 
 import struct
 
-from .contrib import can
+import can
 
 
 class Service(object):

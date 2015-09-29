@@ -8,7 +8,7 @@ try:
 except ImportError:
     from ConfigParser import SafeConfigParser as ConfigParser
 
-from .contrib import can
+import can
 from .can_utils import make_sdo, bytes_to_int, Service
 from .utils import list_attributes
 
