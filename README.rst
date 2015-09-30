@@ -2,16 +2,19 @@
 CANberry
 ========
 
-A small web app that displays sensor data and controls a MOVIDRIVE traction
-converter (Antriebsumrichter) of SEW EURODRIVE connected to the Raspberry Pi
-with a controller area network (CAN) bus.
+A small web app that displays sensor data and controls a `MOVIDRIVE Antriebsumrichter
+<http://www.sew-eurodrive.at/produkt/antriebsumrichter-movidrive.htm>`_
+(traction converter) of SEW EURODRIVE connected to the `Raspberry Pi
+<https://www.raspberrypi.org/>`_ with the help of a controller area network
+(CAN) bus.
 
 Manuals
 -------
 
-* `MOVIDRIVE Serielle Kommunikation <http://download.sew-eurodrive.com/download/pdf/10531602.pdf>`_
-* `MOVIDRIVE Handbuch <http://download.sew-eurodrive.com/download/pdf/09191607.pdf>`_
-* `MOVIDRIVE Operating Instruction <http://download.sew-eurodrive.com/download/pdf/10532617.pdf>`_
+* `MOVIDRIVE Serielle Kommunikation (10531602) <http://download.sew-eurodrive.com/download/pdf/10531602.pdf>`_
+* `MOVIDRIVE Handbuch (09191607) <http://download.sew-eurodrive.com/download/pdf/09191607.pdf>`_
+* `MOVIDRIVE Betriebsanleitung (10532609) <http://download.sew-eurodrive.com/download/pdf/10532609.pdf>`_
+* `MOVIDRIVE Operating Instruction (10532617) <http://download.sew-eurodrive.com/download/pdf/10532617.pdf>`_
 
 Installation
 ============
