@@ -1,29 +1,78 @@
 ========
-canberry
+CANberry
 ========
 
-This is the documentation of **canberry**.
+A small web app that displays sensor data and controls a `MOVIDRIVE Antriebsumrichter
+<http://www.sew-eurodrive.at/produkt/antriebsumrichter-movidrive.htm>`_
+(traction converter) of SEW EURODRIVE connected to the `Raspberry Pi
+<https://www.raspberrypi.org/>`_ with the help of a controller area network
+(CAN) bus.
 
-.. note::
+Manuals
+-------
 
-    This is the main page of your project's `Sphinx <http://sphinx-doc.org/>`_
-    documentation. It is formatted in `reStructuredText
-    <http://sphinx-doc.org/rest.html>`__. Add additional pages by creating
-    rst-files in ``docs`` and adding them to the `toctree
-    <http://sphinx-doc.org/markup/toctree.html>`_ below. Use then
-    `references <http://sphinx-doc.org/markup/inline.html>`__ in order to link
-    them from this page, e.g. :ref:`authors <authors>` and :ref:`changes`.
-    It is also possible to refer to the documentation of other Python packages
-    with the `Python domain syntax
-    <http://sphinx-doc.org/domains.html#the-python-domain>`__. By default you
-    can reference the documentation of `Sphinx <http://sphinx.pocoo.org>`__,
-    `Python <http://docs.python.org/>`__, `matplotlib
-    <http://matplotlib.sourceforge.net>`__, `NumPy
-    <http://docs.scipy.org/doc/numpy>`__, `Scikit-Learn
-    <http://scikit-learn.org/stable>`__, `Pandas
-    <http://pandas.pydata.org/pandas-docs/stable>`__, `SciPy
-    <http://docs.scipy.org/doc/scipy/reference/>`__. You can add more by
-    extending the ``intersphinx_mapping`` in your Sphinx's ``conf.py``.
+* `MOVIDRIVE Serielle Kommunikation (10531602) <http://download.sew-eurodrive.com/download/pdf/10531602.pdf>`_
+* `MOVIDRIVE Handbuch (09191607) <http://download.sew-eurodrive.com/download/pdf/09191607.pdf>`_
+* `MOVIDRIVE Betriebsanleitung (10532609) <http://download.sew-eurodrive.com/download/pdf/10532609.pdf>`_
+* `MOVIDRIVE Operating Instruction (10532617) <http://download.sew-eurodrive.com/download/pdf/10532617.pdf>`_
+
+Installation
+============
+
+In order to install CANberry just create a virtual environment and use pip::
+
+    pip install canberry
+
+Configuration
+=============
+
+Create a configuration file .canrc with following content in your home directory::
+
+    [default]
+    interface = socketcan
+    channel = can0
+
+    [canberry]
+    identifier = 16
+
+The identifier is the default target address.
+
+Development
+===========
+
+Installation:
+
+* Create a virtual environment `virtualenv venv` and activate it with
+  `source venv/bin/activate`.
+* Install all dependencies with `pip install -r requirements.txt`.
+* Run `python setup.py develop` to install CANberry in your virtual environment.
+* Run `canberry` from the command line to start the web application. Try
+  `canberry -h` for help on more options.
+
+Updating the javascript components with:
+
+* Install *npm* with `sudo apt-get install nodejs`.
+* Install *bower* with `sudo npm install -g bower`.
+* Use `bower install -S` to install and update js dependencies like
+  concise, ractive, jquery, flotcharts.
+
+Credits
+=======
+
+This project uses following libraries:
+
+* `jQuery <https://jquery.com/>`_
+* `Concise CSS <http://concisecss.com/>`_
+* `Ractive.js <http://www.ractivejs.org/>`_
+* `Flot <http://www.flotcharts.org/>`_
+* `python-can <https://python-can.readthedocs.org/>`_
+
+
+Note
+====
+
+This project has been set up using PyScaffold. For details and usage
+information on PyScaffold see http://pyscaffold.readthedocs.org/.
 
 Contents
 ========
@@ -34,7 +83,7 @@ Contents
    License <license>
    Authors <authors>
    Changelog <changes>
-   Module Reference <_rst/modules>
+   Module Reference <api/modules>
 
 
 Indices and tables
