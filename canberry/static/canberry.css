@@ -73,6 +73,24 @@ input[type=checkbox] {
 	padding: 10px;
 }
 
+#dropdown {
+  background-color: #4591aa;
+  border: none;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  line-height: 32px;
+  overflow: visible;
+  padding: 0 1.5em;
+  text-align: center;
+  text-decoration: none;
+  transition: 150ms;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
 .sensor-container {
 	box-sizing: border-box;
 	width: 850px;

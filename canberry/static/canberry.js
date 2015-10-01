@@ -6,7 +6,7 @@ var maxNumOfElements = 1000;
 
 // Module pattern to store sensor data
 // http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html
-var sensorData = (function () {
+var sensorData = (function() {
     var plot;
     var points = [];
     var lastData;
@@ -74,18 +74,23 @@ var sensorData = (function () {
         return sensorData.updateSensor().then(initPlot);
     };
 
-    pub.getSensorValue = function () {
+    pub.getSensorValue = function() {
         return points[points.length-1][1];
     };
 
+    pub.getSensorData = function() {
+        return lastData;
+    };
     return pub; // expose externally
 }());
 
-// object to store all sensors and the currently selected
-var sensorSelector = (function () {
+// Module pattern to store all sensors and the currently selected one
+var sensorSelector = (function() {
     var currSensor; // private
     var sensors = []; // private
     var pub = {}; // public object - returned at end of module
+
+    /* Public functions */
 
     pub.initSensors = function() {
         return $.getJSON('./sensors').then(function(data, status) {
@@ -133,18 +138,18 @@ function refreshApp() {
 
 }
 
-// set up Ractive.js and event proxies
+// Set up Ractive.js and event proxies
 function initRactive() {
     ractive = new Ractive({
-      // The `el` option can be a node, an ID, or a CSS selector.
-      el: '#container',
-      // We could pass in a string, but for the sake of convenience
-      // we're passing the ID of the <script> tag above.
-      template: '#template',
-      // Here, we're passing in some initial data
-      data: {sensors: sensorSelector.listSensors(),
-             currSensor: sensorSelector.getCurrSensor(),
-             sensorValue: sensorData.getSensorValue()}
+        // Where to render the template as node, an ID, or a CSS selector
+        el: '#container',
+        // ID of a script tag as template defined in index.html
+        template: '#template',
+        // Initial data for all template parameters
+        data: {sensors: sensorSelector.listSensors(),
+               currSensor: sensorSelector.getCurrSensor(),
+               sensorValue: sensorData.getSensorValue(),
+               sensorDefault: sensorData.getSensorData().default}
     });
     ractive.on('change-sensor', function (event) {
         sensorSelector.setCurrSensor(event.context);
@@ -153,9 +158,9 @@ function initRactive() {
     });
 }
 
-// initialization, starting of ractive.js and refresh interval
+// Initialization, starting of ractive.js and refresh interval
 var ractive;
-$( document ).ready(function() {
+$(document).ready(function() {
     sensorSelector.initSensors().then(
         sensorData.updateSensor).done(function() {
             initRactive();

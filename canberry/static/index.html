@@ -33,9 +33,10 @@
 </footer>
 
 <script id='template' type='text/ractive'>
+<div container>
     <div row>
         <div column=4>
-            <div tabindex="0" class="dropdown dropbown--small">
+            <div tabindex="0" id="dropdown" class="dropdown dropbown--small">
                 Select sensor &raquo;
                 <ul class="dropdown-content">
                     {{#sensors}}
@@ -50,6 +51,12 @@
     <div class="sensor-container">
         <div id="sensor-plot" class="sensor-plot"></div>
     </div>
+    <form method="post" class="form--inline">
+      <label for="value">New value:</label>
+      <input type="text" name="value" placeholder="{{sensorDefault}}" />
+      <input type="submit" value="Send">
+    </form>
+</div>
 </script>
 
 <script src="./bower/ractive/ractive.min.js"></script>
