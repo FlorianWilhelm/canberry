@@ -7,12 +7,11 @@ import json
 import math
 import time
 
-from flask import abort
+from flask import abort, request
 
 from . import logic
 from . import app
-from .can_utils import Service
-from .utils import add_timestamp
+from .utils import add_timestamp, DummySensor, static_vars
 
 
 @app.route('/')
@@ -26,7 +25,7 @@ def list_sensors():
     return json.dumps(sensors)
 
 
-@app.route('/sensors/<sensor>')
+@app.route('/sensors/<sensor>', methods=['GET'])
 def read_sensor(sensor):
     if logic.is_sensor_known(sensor):
         response = logic.read_sensor(sensor)
@@ -36,36 +35,38 @@ def read_sensor(sensor):
         return abort(404)
 
 
-@app.route('/sensors/dummy1')
-def read_dummy1():
-    response = {Service.READ_PARAM: math.sin(0.5*time.time()),
-                Service.READ_MIN: -1,
-                Service.READ_MAX: 1,
-                Service.READ_DEFAULT: 0,
-                Service.READ_SCALE: 1}
-    add_timestamp(response)
-    return json.dumps(response)
-
-
-@app.route('/sensors/dummy2')
-def read_dummy2():
-    response = {Service.READ_PARAM: 2*math.sin(time.time())+0.5,
-                Service.READ_MIN: -1.5,
-                Service.READ_MAX: 2.5,
-                Service.READ_DEFAULT: 0,
-                Service.READ_SCALE: 1}
-    add_timestamp(response)
-    return json.dumps(response)
-
-
-@app.route('/sensors/<sensor>/<int:value>')
-def write_sensor(sensor, value):
+@app.route('/sensors/<sensor>', methods=['POST'])
+def write_sensor(sensor):
     if logic.is_sensor_known(sensor):
         try:
-            logic.write_sensor(sensor, value)
+            logic.write_sensor(sensor, request.form['newValue'])
         except:
             raise
             # return json.dumps({'status': 'error'})
-        return json.dumps({'status': 'ok'})
+        return '', 204
     else:
         return abort(404)
+
+
+@static_vars(dummy=DummySensor())
+@app.route('/sensors/dummy1', methods=['GET', 'POST'])
+def handle_dummy1():
+    if request.method == 'GET': # read
+        response = handle_dummy1.dummy.read()
+        add_timestamp(response)
+        return json.dumps(response)
+    else: # write
+        handle_dummy1.dummy.set(request.form['newValue'])
+        return '', 204
+
+
+@static_vars(dummy=DummySensor(trans=0.5, scale=1.5))
+@app.route('/sensors/dummy2', methods=['GET', 'POST'])
+def handle_dummy2():
+    if request.method == 'GET': # read
+        response = handle_dummy2.dummy.read()
+        add_timestamp(response)
+        return json.dumps(response)
+    else: # write
+        handle_dummy2.dummy.set(request.form['newValue'])
+        return '', 204

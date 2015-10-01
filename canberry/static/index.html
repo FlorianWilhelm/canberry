@@ -51,10 +51,10 @@
     <div class="sensor-container">
         <div id="sensor-plot" class="sensor-plot"></div>
     </div>
-    <form method="post" class="form--inline">
-      <label for="value">New value:</label>
-      <input type="text" name="value" placeholder="{{sensorDefault}}" />
-      <input type="submit" value="Send">
+    <form action="./sensors/{{currSensor}}" method="post" class="form--inline">
+        <label for="value">New value:</label>
+        <input type="text" name="newValue" placeholder="{{sensorDefault}}" />
+        <input type="submit" value="Send">
     </form>
 </div>
 </script>
