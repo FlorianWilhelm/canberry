@@ -45,7 +45,7 @@
                 </ul>
             </div>
         </div>
-        <div column=4>{{currSensor}}</div>
+        <div column=4><strong>{{currSensor}}</strong></div>
         <div column=4>{{sensorValue}}</div>
     </div>
     <div class="sensor-container">
@@ -53,9 +53,14 @@
     </div>
     <form action="./sensors/{{currSensor}}" method="post" class="form--inline">
         <label for="value">New value:</label>
-        <input type="text" name="newValue" placeholder="{{sensorDefault}}" />
+        <input type="number" step="1e-8" name="newValue" placeholder="{{sensorDefault}}" min="{{sensorMin}}" max="{{sensorMax}}"/>
         <input type="submit" value="Send">
     </form>
+    {{#if error}}
+    <div class="alert alert--error">
+        <p><strong>Error!</strong>{{errorMsg}}{{sensorMin}}{{sensorMax}}</p>
+    </div>
+    {{/if}}
 </div>
 </script>
 

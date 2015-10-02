@@ -149,11 +149,16 @@ function initRactive() {
         data: {sensors: sensorSelector.listSensors(),
                currSensor: sensorSelector.getCurrSensor(),
                sensorValue: sensorData.getSensorValue(),
-               sensorDefault: sensorData.getSensorData().default}
+               sensorDefault: sensorData.getSensorData().default,
+               sensorMin: sensorData.getSensorData().minimum,
+               sensorMax: sensorData.getSensorData().maximum,
+               error: true}
     });
     ractive.on('change-sensor', function (event) {
         sensorSelector.setCurrSensor(event.context);
         ractive.set('currSensor', event.context);
+        ractive.set('sensorMin', sensorData.getSensorData().minimum);
+        ractive.set('sensorMax', sensorData.getSensorData().maximum);
         sensorData.startNewSensor();
     });
 }

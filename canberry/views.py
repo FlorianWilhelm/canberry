@@ -28,9 +28,12 @@ def list_sensors():
 @app.route('/sensors/<sensor>', methods=['GET'])
 def read_sensor(sensor):
     if logic.is_sensor_known(sensor):
-        response = logic.read_sensor(sensor)
-        add_timestamp(response)
-        return json.dumps(response)
+        try:
+            response = logic.read_sensor(sensor)
+            add_timestamp(response)
+            return json.dumps(response)
+        except Exception as e:
+            return str(e), 500
     else:
         return abort(404)
 
@@ -40,9 +43,8 @@ def write_sensor(sensor):
     if logic.is_sensor_known(sensor):
         try:
             logic.write_sensor(sensor, request.form['newValue'])
-        except:
-            raise
-            # return json.dumps({'status': 'error'})
+        except Exception as e:
+            return str(e), 500
         return '', 204
     else:
         return abort(404)
