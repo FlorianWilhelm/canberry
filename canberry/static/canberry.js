@@ -84,10 +84,6 @@ var sensorData = (function() {
         return $.post(url, {newValue: form.newValue.value*lastData.scale});
     };
 
-    pub.getSensorData = function() {
-        return lastData;
-    };
-
     pub.getDefault = function() {
         return lastData.default / lastData.scale
     };
