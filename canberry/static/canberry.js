@@ -117,6 +117,31 @@ var sensorSelector = (function() {
     return pub; // expose externally
 }());
 
+// Handler for error messages and alerts
+var errorHandler = (function() {
+    var timeout;
+    var pub = {}; // public object - returned at end of module
+
+    /* Private functions */
+
+    function displayAlert(message) {
+        ractive.set('error', false);
+    }
+
+    /* Public functions */
+
+    pub.handle = function(msg) {
+        ractive.set('errorMsg', msg.responseText);
+        if (!ractive.get('error')) {
+            ractive.set('error', true);
+        }
+        clearTimeout(timeout);
+        timeout = setTimeout(displayAlert, errorDisplayTime);
+    };
+
+    return pub; // expose externally
+}());
+
 function assert(condition, message) {
     if (!condition) {
         message = message || "Assertion failed";
@@ -138,15 +163,6 @@ function refreshApp() {
     });
 
 }
-
-function handleError(data, status) {
-    if (!ractive.get('error')) {
-        ractive.set('error', true);
-        ractive.set('errorMsg', data.responseText);
-        setTimeout(function() {ractive.set('error', false);}, errorDisplayTime);
-    }
-}
-
 
 // Set up Ractive.js and event proxies
 function initRactive() {
@@ -178,7 +194,7 @@ function initRactive() {
 var ractive;
 $(document).ready(function() {
     $.ajaxSetup({
-        "error": handleError
+        "error": errorHandler.handle
     });
     sensorSelector.initSensors().then(
         sensorData.updateSensor).done(function() {
