@@ -18,7 +18,7 @@ var sensorData = (function() {
 
     function addData(data) {
         lastData = data;
-        points.push([data.timestamp, data.parameter])
+        points.push([data.timestamp, data.parameter/data.scale])
         while (points.length > maxNumOfElements) {
             points.shift();
         }
@@ -48,8 +48,8 @@ var sensorData = (function() {
         points.splice(points.length-1, 0, null) // start a new line segment
         plot = $.plot("#sensor-plot", [points], {
             yaxis: {
-                min: lastData.minimum,
-                max: lastData.maximum
+                min: pub.getMinimum(),
+                max: pub.getMaximum()
             },
             xaxis: {
                 show: false,
@@ -79,9 +79,27 @@ var sensorData = (function() {
         return points[points.length-1][1];
     };
 
+    pub.setSensorValue = function(form) {
+        var url = './sensors/' + sensorSelector.getCurrSensor();
+        return $.post(url, {newValue: form.newValue.value*lastData.scale});
+    };
+
     pub.getSensorData = function() {
         return lastData;
     };
+
+    pub.getDefault = function() {
+        return lastData.default / lastData.scale
+    };
+
+    pub.getMinimum = function() {
+        return lastData.minimum / lastData.scale
+    };
+
+    pub.getMaximum = function() {
+        return lastData.maximum / lastData.scale
+    };
+
     return pub; // expose externally
 }());
 
@@ -175,17 +193,17 @@ function initRactive() {
         data: {sensors: sensorSelector.listSensors(),
                currSensor: sensorSelector.getCurrSensor(),
                sensorValue: sensorData.getSensorValue(),
-               sensorDefault: sensorData.getSensorData().default,
-               sensorMin: sensorData.getSensorData().minimum,
-               sensorMax: sensorData.getSensorData().maximum,
+               sensorDefault: sensorData.getDefault(),
+               sensorMin: sensorData.getMinimum(),
+               sensorMax: sensorData.getMaximum(),
                error: false,
                errorMsg: ''}
     });
     ractive.on('change-sensor', function (event) {
         sensorSelector.setCurrSensor(event.context);
         ractive.set('currSensor', event.context);
-        ractive.set('sensorMin', sensorData.getSensorData().minimum);
-        ractive.set('sensorMax', sensorData.getSensorData().maximum);
+        ractive.set('sensorMin', sensorData.getMinimum());
+        ractive.set('sensorMax', sensorData.getMaximum());
         sensorData.startNewSensor();
     });
 }

@@ -42,7 +42,8 @@ def read_sensor(sensor):
 def write_sensor(sensor):
     if logic.is_sensor_known(sensor):
         try:
-            logic.write_sensor(sensor, request.form['newValue'])
+            new_value = int(round(request.form['newValue'], 0))
+            logic.write_sensor(sensor, new_value)
         except Exception as e:
             return str(e), 500
         return '', 204

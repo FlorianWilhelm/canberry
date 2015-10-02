@@ -51,10 +51,10 @@
     <div class="sensor-container">
         <div id="sensor-plot" class="sensor-plot"></div>
     </div>
-    <form action="./sensors/{{currSensor}}" method="post" class="form--inline">
+    <form class="form--inline" action="javascript:void(0)">
         <label for="value">New value:</label>
         <input type="number" step="1e-8" name="newValue" placeholder="{{sensorDefault}}" min="{{sensorMin}}" max="{{sensorMax}}"/>
-        <input type="submit" value="Send">
+        <input type="submit" value="Send" onclick="sensorData.setSensorValue(this.form)">
     </form>
     {{#if error}}
     <div intro='fade' outro='fade' class="alert alert--error">
