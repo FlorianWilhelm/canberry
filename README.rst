@@ -19,9 +19,14 @@ Manuals
 Installation
 ============
 
-In order to install CANberry just create a virtual environment and use pip::
+In order to install CANberry just create a virtual environment with the help
+of `virtualenv`. Then install `python-can` following these `instructions
+<https://bitbucket.org/hardbyte/python-can>`_. Now just use pip to install
+CANberry::
 
     pip install canberry
+
+
 
 Configuration
 =============
