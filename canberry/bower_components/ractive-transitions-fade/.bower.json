@@ -1,0 +1,25 @@
+{
+  "name": "ractive-transitions-fade",
+  "version": "0.2.1",
+  "author": "Rich Harris",
+  "main": "ractive-transitions-fade.js",
+  "ignore": [
+    ".*",
+    "*.json",
+    "node_modules",
+    "demo",
+    "scripts",
+    "test"
+  ],
+  "homepage": "https://github.com/ractivejs/ractive-transitions-fade",
+  "_release": "0.2.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.1",
+    "commit": "44a68b56fa0146b55b10a6763a9cfb2963a7f79f"
+  },
+  "_source": "git://github.com/ractivejs/ractive-transitions-fade.git",
+  "_target": "~0.2.1",
+  "_originalSource": "ractive-transitions-fade",
+  "_direct": true
+}

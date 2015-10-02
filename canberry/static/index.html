@@ -40,7 +40,7 @@
                 Select sensor &raquo;
                 <ul class="dropdown-content">
                     {{#sensors}}
-                    <li on-click='change-sensor'>{{this}}</li>
+                    <li on-tap="change-sensor">{{this}}</li>
                     {{/sensors}}
                 </ul>
             </div>
@@ -60,6 +60,8 @@
 </script>
 
 <script src="./bower/ractive/ractive.min.js"></script>
+<script src="./bower/ractive-events-tap/dist/ractive-events-tap.js"></script>
+<script src="./bower/ractive-transitions-fade/dist/ractive-transitions-fade.js"></script>
 <script src="./bower/jquery/dist/jquery.min.js"></script>
 <script src="./bower/Flot/jquery.flot.js"></script>
 <script src="./static/canberry.js"></script>

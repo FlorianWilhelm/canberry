@@ -1,0 +1,14 @@
+{
+	"name": "ractive-transitions-fade",
+	"version": "0.2.1",
+	"author": "Rich Harris",
+	"main": "ractive-transitions-fade.js",
+	"ignore": [
+		".*",
+		"*.json",
+		"node_modules",
+		"demo",
+		"scripts",
+		"test"
+	]
+}
