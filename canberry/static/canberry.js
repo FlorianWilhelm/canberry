@@ -3,6 +3,7 @@
 // Settings
 var updateInterval = 100;
 var maxNumOfElements = 1000;
+var errorDisplayTime = 5000;
 
 // Module pattern to store sensor data
 // http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html
@@ -138,6 +139,15 @@ function refreshApp() {
 
 }
 
+function handleError(data, status) {
+    if (!ractive.get('error')) {
+        ractive.set('error', true);
+        ractive.set('errorMsg', data.responseText);
+        setTimeout(function() {ractive.set('error', false);}, errorDisplayTime);
+    }
+}
+
+
 // Set up Ractive.js and event proxies
 function initRactive() {
     ractive = new Ractive({
@@ -152,7 +162,8 @@ function initRactive() {
                sensorDefault: sensorData.getSensorData().default,
                sensorMin: sensorData.getSensorData().minimum,
                sensorMax: sensorData.getSensorData().maximum,
-               error: true}
+               error: false,
+               errorMsg: ''}
     });
     ractive.on('change-sensor', function (event) {
         sensorSelector.setCurrSensor(event.context);
@@ -166,6 +177,9 @@ function initRactive() {
 // Initialization, starting of ractive.js and refresh interval
 var ractive;
 $(document).ready(function() {
+    $.ajaxSetup({
+        "error": handleError
+    });
     sensorSelector.initSensors().then(
         sensorData.updateSensor).done(function() {
             initRactive();
