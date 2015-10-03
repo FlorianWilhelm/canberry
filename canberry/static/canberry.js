@@ -3,7 +3,7 @@
 // Settings
 var updateInterval = 100;
 var maxNumOfElements = 1000;
-var errorDisplayTime = 5000;
+var errorDisplayTime = 3000;
 
 // Module pattern to store sensor data
 // http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html
@@ -139,18 +139,17 @@ var errorHandler = (function() {
     /* Private functions */
 
     function displayAlert(message) {
-        ractive.set('error', false);
+        return ractive.set('error', false);
     }
 
     /* Public functions */
 
     pub.handle = function(msg) {
-        ractive.set('errorMsg', msg.responseText);
-        if (!ractive.get('error')) {
+        ractive.set('errorMsg', msg.responseText).then(function() {
             ractive.set('error', true);
-        }
-        clearTimeout(timeout);
-        timeout = setTimeout(displayAlert, errorDisplayTime);
+            clearTimeout(timeout);
+            timeout = setTimeout(displayAlert, errorDisplayTime);
+        });
     };
 
     return pub; // expose externally
@@ -173,7 +172,7 @@ function isArrayEmpty(array) {
 
 function refreshApp() {
     sensorData.updateSensor().then(sensorData.updatePlot).done(function() {
-        ractive.set('sensorValue', sensorData.getSensorValue())
+        ractive.set('sensorValue', sensorData.getSensorValue());
     });
 
 }
@@ -197,10 +196,10 @@ function initRactive() {
     });
     ractive.on('change-sensor', function (event) {
         sensorSelector.setCurrSensor(event.context);
-        ractive.set('currSensor', event.context);
-        ractive.set('sensorMin', sensorData.getMinimum());
-        ractive.set('sensorMax', sensorData.getMaximum());
-        sensorData.startNewSensor();
+        ractive.set({currSensor: event.context,
+                     sensorMin: sensorData.getMinimum(),
+                     sensorMax: sensorData.getMaximum()}).then(
+                     sensorData.startNewSensor);
     });
 }
 
