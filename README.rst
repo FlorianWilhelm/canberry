@@ -19,13 +19,9 @@ Manuals
 Installation
 ============
 
-In order to install CANberry just create a virtual environment with the help
-of `virtualenv`. Then install `python-can` following these `instructions
-<https://bitbucket.org/hardbyte/python-can>`_. Now just use pip to install
-CANberry::
+Just use pip to install CANberry and all its dependencies::
 
     pip install canberry
-
 
 
 Configuration
@@ -54,7 +50,7 @@ Installation:
 * Run `canberry` from the command line to start the web application. Try
   `canberry -h` for help on more options.
 
-Updating the javascript components with:
+In order to update the Javascript components shipped with CANberry with:
 
 * Install *npm* with `sudo apt-get install nodejs`.
 * Install *bower* with `sudo npm install -g bower`.

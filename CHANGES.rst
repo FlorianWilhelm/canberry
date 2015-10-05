@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 0.3
+===========
+
+- Sending data is possible via the WebUI
+
 Version 0.2
 ===========
 
