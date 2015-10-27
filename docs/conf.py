@@ -9,17 +9,6 @@
 # serve to show the default.
 
 import sys
-import os
-import inspect
-from sphinx import apidoc
-
-
-__location__ = os.path.join(os.getcwd(), os.path.dirname(
-    inspect.getfile(inspect.currentframe())))
-
-package = "canberry"
-namespace = []
-namespace_pkg = ".".join([namespace[-1], package]) if namespace else package
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -35,7 +24,8 @@ namespace_pkg = ".".join([namespace[-1], package]) if namespace else package
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx', 'sphinx.ext.todo',
               'sphinx.ext.autosummary', 'sphinx.ext.viewcode', 'sphinx.ext.coverage',
-              'sphinx.ext.doctest', 'sphinx.ext.ifconfig', 'sphinx.ext.pngmath']
+              'sphinx.ext.doctest', 'sphinx.ext.ifconfig', 'sphinx.ext.pngmath',
+              'sphinx.ext.napoleon']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -117,7 +107,7 @@ html_theme = 'alabaster'
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
 try:
-    from namespace_pkg import __version__ as version
+    from canberry import __version__ as version
 except ImportError:
     pass
 else:

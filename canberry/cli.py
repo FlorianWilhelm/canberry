@@ -42,7 +42,7 @@ def parse_args(args):
 def main(args):
     args = parse_args(args)
     debug = False if args.prod else True
-    app.run(debug=debug)
+    app.run(debug=True)
 
 
 def run():
