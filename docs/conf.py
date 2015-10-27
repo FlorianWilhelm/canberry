@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'canberry'
+project = u'CANberry'
 copyright = u'2015, Andreas Wilhelm, Florian Wilhelm'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -191,7 +191,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'user_guide.tex', u'canberry Documentation',
+  ('index', 'user_guide.tex', u'CANberry Documentation',
    u'Andreas Wilhelm, Florian Wilhelm', 'manual'),
 ]
 
