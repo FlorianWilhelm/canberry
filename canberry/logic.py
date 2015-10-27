@@ -5,16 +5,11 @@ converter
 """
 from __future__ import print_function, absolute_import, division
 
-import os
 import logging
-try:
-    from configparser import ConfigParser
-except ImportError:
-    from ConfigParser import SafeConfigParser as ConfigParser
 
 import can
 from .can_utils import make_sdo, bytes_to_int, Service
-from .utils import list_attributes
+from .utils import list_attributes, read_config
 
 
 __author__ = 'Florian Wilhelm'
@@ -37,21 +32,11 @@ class Sensor(object):
     @classmethod
     def list_all(cls):
         attrs = list_attributes(cls)
-        return {k: v for k, v in attrs.items() if isinstance(v, basestring)}
-
-
-def read_config():
-    """
-    Read the configuration files .canrc, can.conf etc. as defined by python
-    can in order to retrieve all settings from the section [canberry].
-    :return: dictionary
-    """
-    from can.util import CONFIG_FILES
-    config = ConfigParser()
-    config.read([os.path.expanduser(path) for path in CONFIG_FILES])
-    if not config.has_section('canberry'):
-        raise RuntimeError("Please add a section canberry to your CAN config!")
-    return {key: int(val) for key, val in config.items('canberry')}
+        sensors = {k: v for k, v in attrs.items() if isinstance(v, basestring)}
+        if not read_config()['debug']:
+            sensors = {k: v for k,v in sensors.items()
+                       if not k.startswith('DUMMY')}
+        return sensors
 
 
 def read_sensor(sensor):

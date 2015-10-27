@@ -35,8 +35,13 @@ Create a configuration file .canrc with following content in your home directory
 
     [canberry]
     identifier = 16
+    # Is server externally visible? 'true' or 'false'
+    external = true
+    # Run the server in debug mode? 'true' or 'false'
+    debug = false
 
-The identifier is the default target address.
+The identifier is the default target address. You should note that running an
+externally visible server in debug mode is not recommended!
 
 Development
 ===========

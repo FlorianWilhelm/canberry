@@ -8,6 +8,7 @@ import sys
 import argparse
 
 import canberry
+from .utils import read_config
 from canberry import app
 
 __author__ = 'Florian Wilhelm'
@@ -23,14 +24,6 @@ def parse_args(args):
     """
     parser = argparse.ArgumentParser(
         description="CANberry, webapp for raspberry pi with CAN bus")
-    parser.add_argument(
-        '-p',
-        '--prod',
-        dest='prod',
-        action="store_true",
-        default=False,
-        help="production mode, disable debug")
-
     version = canberry.__version__
     parser.add_argument('-v',
                         '--version',
@@ -40,9 +33,10 @@ def parse_args(args):
 
 
 def main(args):
-    args = parse_args(args)
-    debug = False if args.prod else True
-    app.run(debug=True)
+    parse_args(args)
+    cfg = read_config()
+    host = '0.0.0.0' if cfg['external'] else None
+    app.run(debug=cfg['debug'], host=host)
 
 
 def run():

@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Additional utilities unrelated to everyting else
+Additional utilities
 """
 from __future__ import print_function, absolute_import, division
 
+import os
 import math
 import time
+
+try:
+    from configparser import ConfigParser
+except ImportError:
+    from ConfigParser import SafeConfigParser as ConfigParser
 
 from .can_utils import Service
 
@@ -66,3 +72,37 @@ class DummySensor(object):
 
     def set(self, freq):
         self.freq = float(freq)
+
+
+def str2bool(txt):
+    """
+    Convert a string to a boolean
+
+    :param txt: string object
+    :return: boolean
+    """
+    if txt.lower() in ['1', 'true', 'yes', 'y']:
+        return True
+    elif txt.lower() in ['0', 'false', 'no', 'n']:
+        return False
+    else:
+        raise ValueError("Can't convert \"{}\" to a boolean".format(txt))
+
+
+def read_config():
+    """
+    Read the configuration files .canrc, can.conf etc. as defined by python
+    can in order to retrieve all settings from the section [canberry].
+    :return: dictionary
+    """
+    from can.util import CONFIG_FILES
+    config = ConfigParser()
+    config.read([os.path.expanduser(path) for path in CONFIG_FILES])
+    if not config.has_section('canberry'):
+        raise RuntimeError("Please add a section canberry to your CAN config!")
+    cfg = {key: val for key, val in config.items('canberry')}
+    # Map configuration values to the right data type and set defaults
+    cfg['identifier'] = int(cfg.get('identifier', '0'))
+    cfg['external'] = str2bool(cfg.get('external', 'true'))
+    cfg['debug'] = str2bool(cfg.get('debug', 'false'))
+    return cfg
