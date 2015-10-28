@@ -40,7 +40,7 @@ Create a configuration file .canrc with following content in your home directory
     # Run the server in debug mode? 'true' or 'false'
     debug = false
 
-The identifier is the default target address. You should note that running an
+The identifier is the default target address. One should note that running an
 externally visible server in debug mode is not recommended!
 
 Development

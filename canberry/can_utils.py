@@ -64,7 +64,7 @@ def make_sdo(recipient, index, service=None, value=None, sync=False):
 
     :param recipient: the recipient as integer
     :param index: integer for the sensor
-    :param service: requested service from :obj:`~.Service `
+    :param service: requested service from :obj:`~.Service`
     :param value: None to read a value otherwise write value
     :param sync: Synchronized protocol
     :return: Service Data Object message
